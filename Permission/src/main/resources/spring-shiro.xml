@@ -44,7 +44,7 @@
     <bean id="employeeRealm" class="com.myjava.controller.realm.EmployeeRealm"></bean>
     <!--配置自定义表单监听过滤器-->
     <bean id="formAuthenticationFilter" class="com.myjava.controller.filter.LoginFormFilter"></bean>
-    <!--    添加凭证匹配器,对传入的凭证(密码)进行加密转换以便对比数据库中的密码-->
+<!--    添加凭证匹配器,对传入的凭证(密码)进行加密转换以便对比数据库中的密码-->
     <bean id="hashedCredentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
         <property name="hashAlgorithmName" value="md5"></property>
         <property name="hashIterations" value="2"></property>
