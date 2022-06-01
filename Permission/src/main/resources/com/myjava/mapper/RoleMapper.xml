@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.myjava.mapper.RoleMapper">
+    <insert id="addOneRole" useGeneratedKeys="true" keyProperty="rid" keyColumn="rid">
+        insert into role (rid, rnum, rname)
+        values (#{rid}, #{rnum}, #{rname})
+    </insert>
+
+    <delete id="deleteRolePermissionRel">
+        delete
+        from role_permission_rel
+        where rid = #{rid};
+
+    </delete>
+    <insert id="updateRolePermissionRel" parameterType="Role">
+        insert into role_permission_rel VALUES
+        <foreach collection="permissionList" separator="," close=";" item="permission">
+            (#{permission.pid},#{rid})
+        </foreach>
+    </insert>
+    <delete id="deleteRole">
+        delete
+        from role
+        where rid = #{rid}
+    </delete>
+    <select id="getAllRole" resultType="com.myjava.domain.Role">
+        select *
+        from role
+    </select>
+    <select id="getRoleByPrimaryKey" resultType="Role">
+        select *
+        from role
+        where rid = #{rid}
+    </select>
+    <select id="getRolesByEid" resultType="com.myjava.domain.Role">
+        select rid
+        from employee_role_rel er_rel
+                 join employee e on e.id = er_rel.eid
+        where eid = #{eid}
+    </select>
+</mapper>

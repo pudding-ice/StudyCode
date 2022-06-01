@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.myjava.mapper.EmployeeMapper">
+    <resultMap id="BaseResultMap" type="Employee">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="inputtime" property="inputtime" jdbcType="TIMESTAMP"/>
+        <result column="tel" property="tel" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="BIT"/>
+        <result column="admin" property="admin" jdbcType="BIT"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <association property="department" column="dep_id"
+                     select="com.myjava.mapper.DepartmentMapper.selectByPrimaryKey">
+        </association>
+        <association property="roleList" column="id" select="com.myjava.mapper.RoleMapper.getRolesByEid"></association>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from employee
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteEmployeeRoleRel">
+        delete
+        from employee_role_rel
+        where eid = #{eid}
+    </delete>
+    <insert id="insert" parameterType="com.myjava.domain.Employee" useGeneratedKeys="true" keyColumn="id"
+            keyProperty="id">
+        insert into employee (id, username, inputtime,
+                              tel, email, state, admin,
+                              dep_id, password)
+        values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{inputtime,jdbcType=TIMESTAMP},
+                #{tel,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{state,jdbcType=BIT}, #{admin,jdbcType=BIT},
+                #{department.id,jdbcType=BIGINT}, #{password,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.myjava.domain.Employee">
+        update employee
+        set username  = #{username,jdbcType=VARCHAR},
+            inputtime = #{inputtime,jdbcType=TIMESTAMP},
+            tel       = #{tel,jdbcType=VARCHAR},
+            email     = #{email,jdbcType=VARCHAR},
+            state     = #{state,jdbcType=BIT},
+            admin     = #{admin,jdbcType=BIT},
+            dep_id    = #{department.id,jdbcType=BIGINT},
+            password  = #{password,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateStateByPrimaryKey">
+        update employee
+        set state = 0
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateEmployeeRoleRel">
+        insert into employee_role_rel (eid,rid) values
+        <foreach collection="roleList" item="role" separator=",">
+            (#{id},#{role.rid})
+        </foreach>
+    </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select id,
+               username,
+               inputtime,
+               tel,
+               email,
+               state,
+               admin,
+               dep_id,
+               password
+        from employee
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, username, inputtime, tel, email, state, admin, dep_id, password
+        from employee
+        <where>
+            <if test="keyword != null and keyword != ''">
+                username like concat('%',#{keyword},'%') or
+                tel like concat('%',#{keyword},'%') or
+                email like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </select>
+    <select id="getRoleByEid" resultType="Long">
+        select rid
+        from employee_role_rel
+        where eid = #{eid}
+    </select>
+    <select id="selectByUsername" resultType="Employee">
+        select id,
+               username,
+               inputtime,
+               tel,
+               email,
+               state,
+               admin,
+               dep_id,
+               password
+        from employee
+        where username = #{username}
+    </select>
+
+
+    <select id="getEmployeeRolesByEid" resultType="java.lang.String">
+        select r.rname
+        from employee_role_rel er_rel
+                 join role r on r.rid = er_rel.rid
+        where er_rel.eid = #{eid}
+    </select>
+    <select id="getEmployeePermissionsByEid" resultType="java.lang.String">
+        select distinct presource
+        from role_permission_rel rp_rel
+                 join permission p
+                      on p.pid = rp_rel.pid
+        where rp_rel.rid in
+              (select r.rid
+               from employee_role_rel er_rel
+                        join role r
+                             on r.rid = er_rel.rid
+               where er_rel.eid = #{eid})
+    </select>
+
+</mapper>

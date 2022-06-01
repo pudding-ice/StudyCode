@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.myjava"></context:component-scan>
+
+    <!--    spring使用cglib继承的方式实现aop(继承) 如果proxy-target-class 值是false,则使用的是jdk自带的动态代理(接口)-->
+    <aop:config proxy-target-class="true"></aop:config>
+    <!--    开启aop注解扫描,是AOP使用注解模式的前提条件-->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+
+    <bean id="systemLogAspect" class="com.myjava.Aspect.SystemLogAspect"></bean>
+    <!--配置切面,实现系统日志aop-->
+    <aop:config>
+        <!--        service包下的所有service类的所有方法都被设置了切入点-->
+        <aop:pointcut id="servicePointcut" expression="execution(* com.myjava.service.*.*(..))"/>
+        <aop:aspect ref="systemLogAspect">
+            <aop:after method="writeLog" pointcut-ref="servicePointcut"></aop:after>
+        </aop:aspect>
+    </aop:config>
+
+
+    <!--    导入shiro配置文件-->
+    <import resource="spring-shiro.xml"></import>
+
+    <!--    将queryrunner装载-->
+    <bean id="queryRunner" class="org.apache.commons.dbutils.QueryRunner">
+        <constructor-arg name="ds" ref="dataSource"></constructor-arg>
+    </bean>
+    <!--    从外部引用-->
+    <context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="driverClassName" value="${jdbc.driverClassName}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="maxActive" value="${jdbc.maxActive}"></property>
+    </bean>
+    <!--    声明式事务-注解方式-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <tx:annotation-driven transaction-manager="dataSourceTransactionManager"></tx:annotation-driven>
+
+
+    <!--    外部引入mybatis sqlsession工厂-->
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 核心配置文件的位置 -->
+        <property name="configLocation" value="classpath:MyBatisContext.xml"/>
+        <!--配置mapper映射文件的路径-->
+        <property name="mapperLocations" value="classpath:com/myjava/mapper/*.xml"/>
+    </bean>
+    <!-- 配置Mapper扫描 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 配置Mapper扫描包 -->
+        <property name="basePackage" value="com.myjava.mapper"/>
+    </bean>
+
+
+</beans>

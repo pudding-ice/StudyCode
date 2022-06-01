@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 配置shiro过滤器 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"></property>
+        <!--        配置自定义过滤器-->
+        <property name="filters">
+            <map>
+                <entry key="authc" value-ref="formAuthenticationFilter"></entry>
+            </map>
+        </property>
+        <!-- 配置loginURL
+            默认登录页面:
+            1.如果没有配置loginURL,shiro默认进入根目录下的login页面
+            2.如果配置了loginURL,shiro就会进入用户自己配置的URL页面
+            3.如果配置了loginURL,并且URL能够匹配springmvc的mapper,
+            就会进到具体的controller类中处理请求
+            关于认证
+            1.如果没有认证,配置了loginURL,请求的URL需要认证的话,就不会执行原先的URL请求,而是转向执行loginURL
+            2.如果没有认证,没有配置loginURL,请求的URL需要认证的话,就不会执行原先的URL请求,而是跳转到login.jsp默认页面
+            3.如果没有认证,请求的URL和loginURL一致的话,就会执行认证过程
+
+        -->
+        <property name="loginUrl" value="/login.action"></property>
+        <!-- 配置shiro过滤器pattern -->
+        <property name="filterChainDefinitions">
+            <value>
+                /static/** = anon   <!--静态资源不需要登录验证-->
+                /login.jsp = anon   <!--进入登录页面不需要登录验证-->
+                /logout = logout
+                /**=authc     <!--除指定请求外,其它所有的请求都需要身份验证-->
+            </value>
+        </property>
+    </bean>
+    <!-- 配置shiro安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="employeeRealm"></property>
+        <property name="cacheManager" ref="ehCache"></property>
+    </bean>
+    <!--    配置自定义认证realm-->
+    <bean id="employeeRealm" class="com.myjava.controller.realm.EmployeeRealm"></bean>
+    <!--配置自定义表单监听过滤器-->
+    <bean id="formAuthenticationFilter" class="com.myjava.controller.filter.LoginFormFilter"></bean>
+    <!--    添加凭证匹配器,对传入的凭证(密码)进行加密转换以便对比数据库中的密码-->
+    <bean id="hashedCredentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <property name="hashAlgorithmName" value="md5"></property>
+        <property name="hashIterations" value="2"></property>
+    </bean>
+    <!-- 缓存管理器 -->
+    <bean id="ehCache" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:shiro-ehcache.xml"/>
+    </bean>
+
+
+</beans>

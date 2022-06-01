@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.myjava.mapper.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.myjava.domain.Menu">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="text" property="text" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="parent_id" property="parent_id"></result>
+        <association property="parent" column="id" select="getParentById" javaType="Menu">
+        </association>
+        <association property="permission" column="permission_id" select="selectPermissionById"></association>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from menu
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.myjava.domain.Menu">
+        insert into menu (id, text, url,
+                          parent_id)
+        values (#{id,jdbcType=BIGINT}, #{text,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
+                #{parent.id,jdbcType=BIGINT})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.myjava.domain.Menu">
+        update menu
+        set text      = #{text,jdbcType=VARCHAR},
+            url       = #{url,jdbcType=VARCHAR},
+            parent_id = #{parent.id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select id, text, url, parent_id, permission_id
+        from menu
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, text, url, parent_id, permission_id
+        from menu
+    </select>
+    <select id="getParentById" resultType="com.myjava.domain.Menu">
+        SELECT id, text, url, parent_id
+        FROM menu
+        where id = (select parent_id from menu where id = #{id})
+    </select>
+    <select id="getMenuTree" resultMap="treeMap">
+        select id, text, permission_id
+        from menu
+        where ISNULL(parent_id)
+    </select>
+    <resultMap id="treeMap" type="Menu">
+        <result column="id" property="id"></result>
+        <result column="text" property="text"></result>
+        <association property="children" column="id" select="selectChildrenByPid"/>
+        <association property="permission" column="permission_id" select="selectPermissionById"></association>
+    </resultMap>
+    <select id="selectChildrenByPid" parameterType="long" resultMap="treeMap">
+        SELECT id, text, url, permission_id
+        from menu
+        where parent_id = #{pid}
+    </select>
+
+    <select id="selectPermissionById" resultType="Permission">
+        select pid, pname, presource
+        from menu m
+                 left join permission p
+                           on m.permission_id = p.pid
+        where id = #{id}
+    </select>
+</mapper>
