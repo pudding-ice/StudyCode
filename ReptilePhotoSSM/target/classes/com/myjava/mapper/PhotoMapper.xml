@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.myjava.mapper.PhotoMapper">
+    <insert id="insertPhotos" parameterType="list">
+        insert into photo (p_name,p_url,u_id) values
+        <foreach collection="photoList" item="photo" separator=",">
+            (#{photo.p_name},#{photo.p_url},#{photo.u_id})
+        </foreach>
+    </insert>
+
+    <select id="getPhotosByNameOrUid" resultType="com.myjava.domain.Photo">
+        select * from photo
+        <where>
+            u_id = #{u_id}
+            <if test="photoName!=null and photoName!=''">
+                and p_name like '%${photoName}%'
+            </if>
+        </where>
+    </select>
+</mapper>

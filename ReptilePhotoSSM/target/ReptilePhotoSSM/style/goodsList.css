@@ -1,0 +1,113 @@
+#ms {
+    width: 1500px;
+    height: 300px;
+    /*
+    /background-color: blue;
+    */
+    margin-left: 190px;
+}
+
+#ms .ms_top {
+    width: 1200px;
+    height: 60px;
+    background-image: url(../images/bg_p.png);
+}
+
+#ms .ms_body {
+    width: 1200px;
+    height: 250px;
+    background-color: white;
+}
+
+#ms .ms_body ul {
+    width: 1200px;
+    height: 250px;
+    list-style: none;
+    display: flex;
+}
+
+/*240x250 */
+#ms .ms_body ul li {
+    flex: 1;
+    border-right: 1px solid #6c6c6c;
+}
+
+#ms .ms_body .good {
+    width: 180px;
+    height: 150px;
+    margin-left: 30px;
+}
+
+#ms .ms_body .name {
+    font-size: 15px;
+    padding: 0 10px;
+    color: #6c6c6c;
+}
+
+.yuan {
+    color: red;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.price {
+    color: red;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+#hot_goods {
+    background: white;
+    width: 1200px;
+    height: 600px;
+    margin-left: 190px;
+    margin-top: 30px;
+
+}
+
+#hot_goods .h_title {
+    height: 50px;
+    font-size: 20px;
+    color: red;
+    line-height: 50px;
+    text-align: center;
+    border-bottom: solid 2px;
+}
+
+#hot_goods .h_body {
+    width: 1200px;
+    height: 240px;
+}
+
+#hot_goods ul {
+    overflow: hidden;
+}
+
+#hot_goods ul li {
+    width: 236px;
+    height: 250px;
+    list-style: none;
+    border-right: solid 1px #6c6c6c;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    float: left;
+}
+
+/*伪选择器*/
+#hot_goods ul li:nth-child(5n) { /*nth-child（）里的参数可以是数字，代表第几个元素，也可以在数字后加n，会选择n的整数倍元素*/
+    margin-right: 0;
+}
+
+#hot_goods .good {
+    width: 150px;
+    height: 150px;
+    margin-left: 30px;
+    margin-top: 10px;
+}
+
+#hot_goods .name {
+    font-size: 15px;
+    padding: 0 10px;
+    margin-left: 10px;
+    color: #6c6c6c;
+}

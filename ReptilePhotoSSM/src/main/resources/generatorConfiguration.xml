@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+
+    <!--
+    targetRuntime:设置自动生成的版本
+    MyBatis3:
+    MyBatis3Simple:简单增删改查
+    -->
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <!--
+           不要生成日期和备注
+        -->
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/userform?serverTimezone=UTC"
+                        userId="root"
+                        password="sm19751011">
+        </jdbcConnection>
+
+        <!--
+        配置domain生成策略
+        targetProject:把自动生成的domian放在哪个工程里面
+        targetPackage:哪个包下
+
+        -->
+        <javaModelGenerator targetPackage="com.myjava.domain" targetProject=".\src">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!--
+            配置mapper的生成策略
+            targetPackage:把自动生成的mapper放在哪个工程里面
+            targetProject:哪个包下
+        -->
+        <sqlMapGenerator targetPackage="com.myjava.mapper" targetProject=".\src">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+        <!--
+            mapper接口生成策略
+        -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com/myjava/mapper" targetProject=".\src">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <table tableName="user" domainObjectName="User"></table>
+        <table tableName="photo" domainObjectName="Photo"></table>
+    </context>
+
+</generatorConfiguration>

@@ -1,0 +1,116 @@
+/*头部样式*/
+/*清空所有边缘*/
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#header {
+    height: 88px;
+}
+
+#header .h_center {
+    width: 1200px;
+    height: 88px;
+    margin: 0 auto; /*把内嵌区域居中*/
+}
+
+/*使logo和提示显示在同一行*/
+#header .h_center img {
+    float: left;
+}
+
+#header .h_center p {
+    float: left;
+    text-align: center; /*使字体居中显示*/
+    font-size: 15px; /*字体最小设置为10px*/
+    border: 1px solid #ffb4ab; /*设置字体边框*/
+    margin-top: 30px; /*设置外边框距离上部30像素*/
+    margin-left: 80px;
+    padding: 5px; /*内边框上下左右都留5像素*/
+    color: #6c6c6c;
+    background: #fef2f2;
+}
+
+/*中部样式*/
+/*设置中间区域属性*/
+#login_body .login_b_center {
+    width: 1200px;
+    height: 600px;
+    margin: 0 auto; /*把中间区域居中*/
+    position: relative;
+    background: url("/images/login_background.jpg");
+    background-size: 1200px, 600px;
+    background-position: center;
+}
+
+/*设置登陆窗口样式*/
+#login_body .login_b_center .login_window {
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.8); /*使用rgba（）可以设置标签的颜色以及透明度。 第四个参数为1时是纯白色，越低透明度越高*/
+    position: absolute;
+    right: 20px;
+    top: 120px;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+/*设置所有div区域的高度以及离上边界的距离*/
+#login div {
+    height: 30px;
+    margin-top: 20px;
+}
+
+/*设置所有span属性*/
+#login span {
+    height: 30px;
+    width: 30px;
+    display: inline-block; /*设置为内联块，可以同行显示并且可以修改边框和大小*/
+}
+
+/*设置username的图标*/
+#login .username span {
+    background-image: url(../images/userName_Icon.png);
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    float: left;
+}
+
+/*设置password的图标*/
+#login .password span {
+    background-image: url(../images/password_Icon.png);
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    float: left;
+}
+
+/*对输入框进行设置*/
+#login input {
+    width: 200px;
+    height: 30px;
+    float: left;
+}
+
+/*对登陆按钮进行设置*/
+#login .loginIn input {
+    background-color: #f40;
+    width: 230px;
+    height: 35px;
+    color: white;
+    font-size: 16px;
+}
+
+/*设置登陆窗口下方内容*/
+#login .loginMessage a {
+    display: inline-block;
+    font-size: 13px;
+    color: #696969;
+    float: right;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+#login .username input {
+
+}
